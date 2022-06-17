@@ -40,7 +40,7 @@ async function installRelativeDeps() {
       // Nope, but is the dependency mentioned as normal dependency in the package.json? Use that one
       if (regularDep) {
         console.warn(`[relative-deps][WARN] Could not find target directory '${libDir}', using normally installed version ('${regularDep}') instead`)
-        return
+        continue
       } else {
         console.error(
           `[relative-deps][ERROR] Failed to resolve dependency ${name}: failed to find target directory '${libDir}', and the library is not present as normal depenency either`
