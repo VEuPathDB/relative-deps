@@ -9,6 +9,7 @@ const merge = require("lodash/merge")
 const debounce = require("lodash/debounce")
 const { spawn } = require("yarn-or-npm")
 const tar = require("tar")
+const chokidar = require("chokidar")
 
 async function installRelativeDeps() {
   const projectPkgJson = readPkgUp.sync()
@@ -73,9 +74,11 @@ async function watchRelativeDeps() {
     process.exit(0)
   }
 
-  Object.values(relativeDependencies).forEach(path => {
-    fs.watch(path, { recursive: true }, debounce(installRelativeDeps, 500))
-  });
+  const relativeDependencyPaths = Object.values(relativeDependencies)
+
+  const watcher = chokidar.watch(relativeDependencyPaths)
+
+  watcher.on('all', debounce(installRelativeDeps, 500))
 }
 
 async function libraryHasChanged(name, libDir, targetDir, hashStore) {
